@@ -29,6 +29,10 @@ public class WebWallpaperService extends WallpaperService {
             mWebView.getSettings().setDomStorageEnabled(true);
             mWebView.getSettings().setLoadsImagesAutomatically(true);
             
+            // Accélération matérielle et fond transparent pour un rendu propre
+            mWebView.setBackgroundColor(Color.TRANSPARENT);
+            mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            
             mWebView.setWebViewClient(new WebViewClient() {
                 @Override
                 public void onPageFinished(WebView view, String url) {
@@ -37,7 +41,7 @@ public class WebWallpaperService extends WallpaperService {
                 }
             });
             
-            // Ton URL personnelle sur GitHub Pages
+            // URL personnelle
             mWebView.loadUrl("https://mikaelguegan-stack.github.io/wallpaper/");
         }
 
