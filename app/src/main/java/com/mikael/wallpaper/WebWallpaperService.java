@@ -1,66 +1,66 @@
 package com.mikael.wallpaper;
 
-import android.service.wallpaper.WallpaperService;
-import android.view.MotionEvent;
+import android.graphics.Canvas;
 import android.view.SurfaceHolder;
+import android.service.wallpaper.WallpaperService;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.view.MotionEvent;
 
 public class WebWallpaperService extends WallpaperService {
 
     @Override
     public Engine onCreateEngine() {
-        return new WebEngine();
+        return new WebWallpaperEngine();
     }
 
-    private class WebEngine extends Engine {
-        private WebView webView;
+    private class WebWallpaperEngine extends Engine {
+        private WebView mWebView;
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
             setTouchEventsEnabled(true);
 
-            webView = new WebView(WebWallpaperService.this);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.setWebViewClient(new WebViewClient());
-            webView.loadUrl("https://mikaelguegan-stack.github.io/wallpaper/");
+            mWebView = new WebView(getApplicationContext());
+            mWebView.getSettings().setJavaScriptEnabled(true);
+            mWebView.getSettings().setDomStorageEnabled(true);
+            mWebView.setWebViewClient(new WebViewClient());
+            
+            // Remplace par ton URL ou charge un fichier local
+            mWebView.loadUrl("https://example.com");
+        }
+
+        @Override
+        public void onVisibilityChanged(boolean visible) {
+            super.onVisibilityChanged(visible);
+            if (visible) {
+                mWebView.onResume();
+            } else {
+                mWebView.onPause();
+            }
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            mWebView.destroy();
         }
 
         @Override
         public void onTouchEvent(MotionEvent event) {
-            if (webView != null) {
-                webView.dispatchTouchEvent(event);
-            }
             super.onTouchEvent(event);
+            mWebView.onTouchEvent(event);
         }
 
         @Override
-        public void onSurfaceCreated(SurfaceHolder holder) {
-            super.onSurfaceCreated(holder);
-            draw();
-        }
-
-        @Override
-        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            super.onSurfaceChanged(holder, format, width, height);
-            if (webView != null) {
-                webView.layout(0, 0, width, height);
-            }
-            draw();
-        }
-
-        private void draw() {
-            SurfaceHolder holder = getSurfaceHolder();
-            if (holder != null && webView != null) {
-                try {
-                    Canvas canvas = holder.lockCanvas();
-                    if (canvas != null) {
-                        webView.draw(canvas);
-                        holder.unlockCanvasAndPost(canvas);
-                    }
-                } catch (Exception ignored) {}
+        public void surfaceCreated(SurfaceHolder holder) {
+            super.surfaceCreated(holder);
+            mWebView.layout(0, 0, getSurfaceHolder().getSurfaceFrame().width(), getSurfaceHolder().getSurfaceFrame().height());
+            Canvas canvas = holder.lockCanvas();
+            if (canvas != null) {
+                mWebView.draw(canvas);
+                holder.unlockCanvasAndPost(canvas);
             }
         }
     }
