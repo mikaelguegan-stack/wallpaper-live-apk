@@ -27,7 +27,15 @@ public class WebWallpaperService extends WallpaperService {
             mWebView = new WebView(getApplicationContext());
             mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.getSettings().setDomStorageEnabled(true);
-            mWebView.setWebViewClient(new WebViewClient());
+            mWebView.getSettings().setLoadsImagesAutomatically(true);
+            
+            mWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    updateViewLayout(getSurfaceHolder());
+                }
+            });
             
             // Remplace "https://example.com" par ton URL personnelle
             mWebView.loadUrl("https://example.com");
