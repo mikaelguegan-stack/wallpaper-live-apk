@@ -55,7 +55,7 @@ public class WebWallpaperService extends WallpaperService {
             SurfaceHolder holder = getSurfaceHolder();
             if (holder != null && webView != null) {
                 try {
-                    var canvas = holder.lockCanvas();
+                    Canvas canvas = holder.lockCanvas();
                     if (canvas != null) {
                         webView.draw(canvas);
                         holder.unlockCanvasAndPost(canvas);
