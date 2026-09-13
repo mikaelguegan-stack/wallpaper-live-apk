@@ -7,6 +7,7 @@ import android.service.wallpaper.WallpaperService;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.MotionEvent;
+import android.view.View;
 
 public class WebWallpaperService extends WallpaperService {
 
