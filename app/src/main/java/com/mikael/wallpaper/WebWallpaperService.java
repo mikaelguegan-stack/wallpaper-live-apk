@@ -37,8 +37,8 @@ public class WebWallpaperService extends WallpaperService {
                 }
             });
             
-            // Remplace l'URL ci-dessous par ton lien personnel entre guillemets
-            mWebView.loadUrl("https://ton-site.com");
+            // Ton URL personnelle sur GitHub Pages
+            mWebView.loadUrl("https://mikaelguegan-stack.github.io/wallpaper/");
         }
 
         @Override
