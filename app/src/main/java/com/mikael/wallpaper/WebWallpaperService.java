@@ -27,8 +27,18 @@ public class WebWallpaperService extends WallpaperService {
             mWebView.getSettings().setDomStorageEnabled(true);
             mWebView.setWebViewClient(new WebViewClient());
             
-            // Remplace par ton URL ou charge un fichier local
             mWebView.loadUrl("https://example.com");
+        }
+
+        @Override
+        public void onSurfaceCreated(SurfaceHolder holder) {
+            super.onSurfaceCreated(holder);
+            mWebView.layout(0, 0, getSurfaceHolder().getSurfaceFrame().width(), getSurfaceHolder().getSurfaceFrame().height());
+            Canvas canvas = holder.lockCanvas();
+            if (canvas != null) {
+                mWebView.draw(canvas);
+                holder.unlockCanvasAndPost(canvas);
+            }
         }
 
         @Override
@@ -51,17 +61,6 @@ public class WebWallpaperService extends WallpaperService {
         public void onTouchEvent(MotionEvent event) {
             super.onTouchEvent(event);
             mWebView.onTouchEvent(event);
-        }
-
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            super.surfaceCreated(holder);
-            mWebView.layout(0, 0, getSurfaceHolder().getSurfaceFrame().width(), getSurfaceHolder().getSurfaceFrame().height());
-            Canvas canvas = holder.lockCanvas();
-            if (canvas != null) {
-                mWebView.draw(canvas);
-                holder.unlockCanvasAndPost(canvas);
-            }
         }
     }
 }
