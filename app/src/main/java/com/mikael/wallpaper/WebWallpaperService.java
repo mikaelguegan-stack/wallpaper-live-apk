@@ -8,6 +8,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.MotionEvent;
 import android.view.View;
+import android.os.Handler;
+import android.os.Looper;
 
 public class WebWallpaperService extends WallpaperService {
 
@@ -18,6 +20,18 @@ public class WebWallpaperService extends WallpaperService {
 
     private class WebWallpaperEngine extends Engine {
         private WebView mWebView;
+        private final Handler mHandler = new Handler(Looper.getMainLooper());
+        private boolean mVisible = false;
+
+        private final Runnable mDrawRunner = new Runnable() {
+            @Override
+            public void run() {
+                drawFrame();
+                if (mVisible) {
+                    mHandler.postDelayed(this, 16); // Environ 60 FPS pour la fluidité
+                }
+            }
+        };
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
@@ -29,7 +43,7 @@ public class WebWallpaperService extends WallpaperService {
             mWebView.getSettings().setDomStorageEnabled(true);
             mWebView.getSettings().setLoadsImagesAutomatically(true);
             
-            // Accélération matérielle et fond transparent pour un rendu propre
+            // Accélération matérielle et fond transparent
             mWebView.setBackgroundColor(Color.TRANSPARENT);
             mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             
@@ -41,7 +55,7 @@ public class WebWallpaperService extends WallpaperService {
                 }
             });
             
-            // URL personnelle
+            // Ton URL personnelle
             mWebView.loadUrl("https://mikaelguegan-stack.github.io/wallpaper/");
         }
 
@@ -49,6 +63,18 @@ public class WebWallpaperService extends WallpaperService {
         public void onSurfaceCreated(SurfaceHolder holder) {
             super.onSurfaceCreated(holder);
             updateViewLayout(holder);
+        }
+
+        @Override
+        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            super.onSurfaceChanged(holder, format, width, height);
+            if (width > 0 && height > 0) {
+                mWebView.measure(
+                    View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+                );
+                mWebView.layout(0, 0, width, height);
+            }
         }
 
         private void updateViewLayout(SurfaceHolder holder) {
@@ -61,6 +87,11 @@ public class WebWallpaperService extends WallpaperService {
                 );
                 mWebView.layout(0, 0, width, height);
             }
+            drawFrame();
+        }
+
+        private void drawFrame() {
+            SurfaceHolder holder = getSurfaceHolder();
             Canvas canvas = holder.lockCanvas();
             if (canvas != null) {
                 try {
@@ -74,18 +105,22 @@ public class WebWallpaperService extends WallpaperService {
 
         @Override
         public void onVisibilityChanged(boolean visible) {
+            mVisible = visible;
             super.onVisibilityChanged(visible);
             if (visible) {
                 mWebView.onResume();
                 updateViewLayout(getSurfaceHolder());
+                mHandler.post(mDrawRunner);
             } else {
                 mWebView.onPause();
+                mHandler.removeCallbacks(mDrawRunner);
             }
         }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
+            mHandler.removeCallbacks(mDrawRunner);
             if (mWebView != null) {
                 mWebView.destroy();
             }
@@ -94,7 +129,9 @@ public class WebWallpaperService extends WallpaperService {
         @Override
         public void onTouchEvent(MotionEvent event) {
             super.onTouchEvent(event);
+            // Transmet le tactile directement au WebView pour déclencher les interactions sur ta page web
             mWebView.onTouchEvent(event);
+            drawFrame();
         }
     }
 }
