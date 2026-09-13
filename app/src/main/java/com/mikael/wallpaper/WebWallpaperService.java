@@ -28,7 +28,7 @@ public class WebWallpaperService extends WallpaperService {
             public void run() {
                 drawFrame();
                 if (mVisible) {
-                    mHandler.postDelayed(this, 16); // Environ 60 FPS pour la fluidité
+                    mHandler.postDelayed(this, 16); // 60 FPS
                 }
             }
         };
@@ -43,7 +43,6 @@ public class WebWallpaperService extends WallpaperService {
             mWebView.getSettings().setDomStorageEnabled(true);
             mWebView.getSettings().setLoadsImagesAutomatically(true);
             
-            // Accélération matérielle et fond transparent
             mWebView.setBackgroundColor(Color.TRANSPARENT);
             mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             
@@ -55,7 +54,6 @@ public class WebWallpaperService extends WallpaperService {
                 }
             });
             
-            // Ton URL personnelle
             mWebView.loadUrl("https://mikaelguegan-stack.github.io/wallpaper/");
         }
 
@@ -129,8 +127,8 @@ public class WebWallpaperService extends WallpaperService {
         @Override
         public void onTouchEvent(MotionEvent event) {
             super.onTouchEvent(event);
-            // Transmet le tactile directement au WebView pour déclencher les interactions sur ta page web
-            mWebView.onTouchEvent(event);
+            // Utilise dispatchTouchEvent et force un rendu immédiat pour supprimer toute latence tactile
+            mWebView.dispatchTouchEvent(event);
             drawFrame();
         }
     }
