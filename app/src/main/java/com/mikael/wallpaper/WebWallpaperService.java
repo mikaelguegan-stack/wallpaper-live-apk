@@ -37,8 +37,8 @@ public class WebWallpaperService extends WallpaperService {
                 }
             });
             
-            // Remplace "https://example.com" par ton URL personnelle
-            mWebView.loadUrl("https://example.com");
+            // Remplace l'URL ci-dessous par ton lien personnel entre guillemets
+            mWebView.loadUrl("https://ton-site.com");
         }
 
         @Override
