@@ -1,29 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mikael.wallpaper">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <application
-        android:allowBackup="true"
-        android:icon="@android:drawable/sym_def_app_icon"
-        android:roundIcon="@android:drawable/sym_def_app_icon"
-        android:label="WebWallpaper"
-        android:supportsRtl="true"
-        android:theme="@android:style/Theme.NoTitleBar">
-
-        <service
-            android:name=".WallpaperService"
-            android:permission="android.permission.BIND_WALLPAPER"
+        <activity
+            android:name=".WallpaperSettingsActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.service.wallpaper.WallpaperService" />
+                <action android:name="android.app.wallpaper.WALLPAPER_SETTINGS" />
             </intent-filter>
-            <meta-data
-                android:name="android.service.wallpaper"
-                android:resource="@xml/wallpaper" />
-        </service>
-
-    </application>
-
-</manifest>
+        </activity>
