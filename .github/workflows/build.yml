@@ -7,27 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: cirrusci/android-sdk:34
     steps:
       - uses: actions/checkout@v4
 
-      - name: set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      - name: Build APK with Gradle
+        run: gradle assembleDebug
 
-      - name: Build with Gradle
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: default
-          arch: x86_64
-          disable-animations: true
-          force-avd-creation: false
-          uses-sudo: false
-          run: ./gradlew assembleDebug
-
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: WallpaperApp-APK
