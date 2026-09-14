@@ -28,7 +28,7 @@ public class WebWallpaperService extends WallpaperService {
             public void run() {
                 drawFrame();
                 if (mVisible) {
-                    mHandler.postDelayed(this, 16); // 60 FPS
+                    mHandler.postDelayed(this, 16);
                 }
             }
         };
@@ -43,8 +43,12 @@ public class WebWallpaperService extends WallpaperService {
             mWebView.getSettings().setDomStorageEnabled(true);
             mWebView.getSettings().setLoadsImagesAutomatically(true);
             
+            // Configuration de l'affichage et du focus immédiat
             mWebView.setBackgroundColor(Color.TRANSPARENT);
             mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            mWebView.setFocusable(true);
+            mWebView.setFocusableInTouchMode(true);
+            mWebView.requestFocus();
             
             mWebView.setWebViewClient(new WebViewClient() {
                 @Override
@@ -107,6 +111,7 @@ public class WebWallpaperService extends WallpaperService {
             super.onVisibilityChanged(visible);
             if (visible) {
                 mWebView.onResume();
+                mWebView.requestFocus(); // Réattribue le focus dès que l'écran s'affiche
                 updateViewLayout(getSurfaceHolder());
                 mHandler.post(mDrawRunner);
             } else {
@@ -127,7 +132,6 @@ public class WebWallpaperService extends WallpaperService {
         @Override
         public void onTouchEvent(MotionEvent event) {
             super.onTouchEvent(event);
-            // Utilise dispatchTouchEvent et force un rendu immédiat pour supprimer toute latence tactile
             mWebView.dispatchTouchEvent(event);
             drawFrame();
         }
