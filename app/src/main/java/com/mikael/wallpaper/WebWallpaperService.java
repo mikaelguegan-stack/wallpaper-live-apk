@@ -1,6 +1,6 @@
+package com.mikael.wallpaper;
 
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceHolder;
@@ -37,7 +37,6 @@ public class WebWallpapersService extends WallpaperService {
                 settings.setLoadsImagesAutomatically(true);
                 settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
-                // Gestion de l'affichage du sélecteur de fichiers (Galerie)
                 mWebView.setWebChromeClient(new WebChromeClient() {
                     @Override
                     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
@@ -45,9 +44,6 @@ public class WebWallpapersService extends WallpaperService {
                             mUploadMessage.onReceiveValue(null);
                         }
                         mUploadMessage = filePathCallback;
-                        
-                        // Note : Sur un Live Wallpaper pur, l'appel natif d'une Activity externe pour l'intent 
-                        // nécessite de passer par une Activity intermédiaire si la galerie refuse de s'ouvrir directement.
                         return true;
                     }
                 });
@@ -60,7 +56,7 @@ public class WebWallpapersService extends WallpaperService {
                     }
                 });
 
-                // Chargement direct de ta page GitHub Pages dynamique
+                // Chargement de ta page GitHub Pages dynamique
                 mWebView.loadUrl("https://mikaelguegan-stack.github.io/wallpaper/");
             });
         }
